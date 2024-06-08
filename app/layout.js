@@ -2,25 +2,42 @@
 // import Navigation from "./_components/Navigation.js";
 import Logo from "@/app/_components/Logo.js";
 import Navigation from "@/app/_components/Navigation.js";
+import "@/app/_styles/globals.css";
+import { Josefin_Sans } from "next/font/google"; // we are importing a function
+import Header from "./_components/Header.js";
+
+const josefin = Josefin_Sans({
+  subsets: ["latin"], // set of characters
+  display: "swap", // first displayed in default font and then swapped
+});
+
+// console.log(josefin);
 
 // Every next app needs to have one global layout (root layout) ; this root layout will wrap around every component
 // Whatever rendered on every page is whatever returned from root layout
 
+// We can either export this metadata from a layout or export metadata from different files (pages) which will overwrite this metadata
 export const metadata = {
-  title: "The FuturaX Inn",
-  description: "Welcome to the enclave",
+  // title: "The FuturaX Inn",
+  title: {
+    template: "%s | The FuturaX Inn",
+    default: "Welcome | The FuturaX Inn",
+  },
+  description:
+    "Welcome to The Enclave: Where luxury meets comfort, offering an exquisite escape with top-notch amenities and unparalleled service for discerning travelers.",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body>
-        <header>
-          <Logo />
-        </header>
-        <Navigation />
-        <main>{children}</main>
-        <footer>The FuturaX Inn</footer>
+      <body
+        className={`bg-primary-950 antialiased text-primary-100 min-h-screen ${josefin.className} flex flex-col relative`}
+      >
+        <Header />
+
+        <div className="flex-1 px-8 py-12">
+          <main className="max-w-7xl mx-auto">{children}</main>
+        </div>
       </body>
     </html>
   );
