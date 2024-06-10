@@ -1,5 +1,9 @@
+import Spinner from "@/app/_components/Spinner.js";
+
+// This is global loading indicator ; we can have specific loading.js also for the routes which we want that in the same way as we have layout.js
+
 export default function Loading() {
-  return <h1>Loading...</h1>;
+  return <Spinner />;
 }
 
 // Done using render to readable streams ( concept of loading applied using streams in NextJs ; requires js to be enabled in browser )
