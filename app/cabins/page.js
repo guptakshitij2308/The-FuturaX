@@ -1,13 +1,14 @@
-import CabinCard from "@/app/_components/CabinCard.js";
-import { getCabins } from "../_lib/data-service.js";
+import { Suspense } from "react";
+import CabinList from "../_components/CabinList.js";
+import Spinner from "../_components/Spinner.js";
 
 export const metadata = {
   title: "Cabins",
 };
 
-export default async function Page() {
-  const cabins = await getCabins();
-  // console.log(cabins);
+export default function Page() {
+  // we ll be moving all the data fetching into it's own component and then wrap it with a suspense boundary for a granular strategy of streaming data.
+  // since the below comp did not depend on data fetching,we moved that to separate comp and then wrap it with a suspense ; convention in nextjs
 
   return (
     <div>
@@ -22,13 +23,11 @@ export default async function Page() {
         home away from home. The perfect spot for a peaceful, calm vacation.
         Welcome to paradise.
       </p>
-      {cabins.length > 0 && (
-        <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 xl:gap-14">
-          {cabins.map((cabin) => (
-            <CabinCard cabin={cabin} key={cabin.id} />
-          ))}
-        </div>
-      )}
+
+      {/* Loading.js file has been overwritten by this suspense boundary written here. */}
+      <Suspense fallback={<Spinner />}>
+        <CabinList />
+      </Suspense>
     </div>
   );
 }
