@@ -1,20 +1,25 @@
 import Image from "next/image.js";
 import aboutImg1 from "@/public/about-1.jpg";
+import { getCabins } from "../_lib/data-service.js";
 // import aboutImg2 from "@/public/about-2.jpg";
 
 export const metadata = {
   title: "About",
 };
 
+export const revalidate = 86400;
+
 // The problem we want the images to be responsive....but while using nextjs Image component, it requires height and width also.
 // Current soln of using Image component by static imports will only work for statically imported images not for imgs coming from db or other sources.
 
-export default function Page() {
+export default async function Page() {
+  const cabins = await getCabins();
+  // console.log(cabins.length);
   return (
     <div className="grid grid-cols-5 gap-x-24 gap-y-32 text-lg items-center">
       <div className="col-span-3">
         <h1 className="text-4xl mb-10 text-accent-400 font-medium">
-          Welcome to The Wild Oasis
+          Welcome to The FuturaX Inn
         </h1>
 
         <div className="space-y-8">
@@ -26,10 +31,10 @@ export default function Page() {
             and enjoying simple pleasures with family.
           </p>
           <p>
-            Our 8 luxury cabins provide a cozy base, but the real freedom and
-            peace you&#39;ll find in the surrounding mountains. Wander through
-            lush forests, breathe in the fresh air, and watch the stars twinkle
-            above from the warmth of a campfire or your hot tub.
+            Our {cabins?.length || 0} luxury cabins provide a cozy base, but the
+            real freedom and peace you&#39;ll find in the surrounding mountains.
+            Wander through lush forests, breathe in the fresh air, and watch the
+            stars twinkle above from the warmth of a campfire or your hot tub.
           </p>
           <p>
             This is where memorable moments are made, surrounded by nature&#39;s

@@ -1,0 +1,49 @@
+NEXT.JS CACHING
+
+Caching: Storing fetched or computed data in a temporary location for future access, instead of having to re-fetch or re-compute the data every time it's needed.
+
+Next.js caches very aggressively: everything that is possible to cache, is cached
+
+Next.js provides APIs for cache revalidation: removing data from the cache and updating it with fresh data (re-fetched or re-computed)
+
+Makes Next.js apps more performant and saves costs (computing and data access)
+
+Caching always ON by default: strange and unexpected behavior in some situations. Some caches can't be turned off
+
+Very confusing: Many different Next.js APIs affect and control caching
+
+4 types of caching mechanisms: 
+
+Server :
+
+1) Request Memoization : Data fetched with simiilar get requests during liefspan of one req per user ; Data is cached and reused only during exactly one page render. (Short term memory for fetched data.)
+This caches allows us to fetch the same data at multiple locations in the tree in a single network request. Only works with fetch.
+
+No way to revalidate this cache. In order to opt out we can use abortController.
+
+
+2) Data Cache : Stores the data fetched either in a specific route or from a single fetch request. Data stays forever unless the cache is revalidated (The data is available along multiple req from different users and even survives a redeploy of the app ).
+This data is only used in static pages which statically renders routes.  
+
+Time-based (automatic) for all data on page : export const revalidate = <time>; (page.js) 
+Time-based (automatic) for one data request:  fetch('...', { next: { revalidate: <time>} })
+On-demand (manual) : revalidatePath or revalidateTag 
+
+Always revalidate : export const revalidate = 0; turn off the cache or export const dynamic = "force-dynamic";
+Entire page:
+
+export const revalidate = 0; (page.js)
+Entire page: export const dynamic = 'force-dynamic'; (page.js)
+Individual request: fetch('...', { cache: 'no-store' })
+Individual server component: noStore()
+
+
+3) Full Route Cache : Sotres entire static pages(HTML pages and rsc payload) ; it remains persisted till the data cache is being revalidated. Does not survive redeploy.
+
+Client: 
+
+4) Router Cache : Stores all pre fetch pages and visited pages.(static and dynamic) ; Stale data : Problem is that the pages are nott fetched from the server again and stored(30 sec dynamic, 5 mins static )
+revalidatePath or revalidateTag in server actions ; router.refresh or cookie.delete in server action ;
+we can't opt out of this.
+
+Caching only works in production not in development. 

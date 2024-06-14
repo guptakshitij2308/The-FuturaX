@@ -1,0 +1,33 @@
+IN NextJs both server and client components run on the server. In NextJs , SSR work is split by routes (static or dynamic). The entire app is not static or dynamic but each route individually.
+ 
+Static : In this,HTML for the route is genrerated at build time. (ISR : Incremental static rendering => route can be re rendered theoretically in the background by refetching data from time to time. )
+Useful when data for the route doesn't change quite often (not personalized for the user e.g. : product page).
+
+Dynamic: HTML generated at request time (server renders a new version of the page at each time req hits the server).
+Useful when data for the route changes quite often (personalized for the user e.g. : cart page). Also userful when rendering a route depends on the request.(search params)
+
+By default in next all the routes are rendered statically (even when other component fetches some data).
+As static pages are way faster as they are pre generated which saves time. And static assets can be easily deployed on the CDN. Whereas each dynamic route when hosted will become a serverless func.
+When we have no user data,entire app can be exported as a static site(SSG)
+
+A route automatically switches to dynamic rendering under : Route contians dynamic segment(page uses params) , searchParams , Headers and cookies , uncached data req.Because these all can not be known at runtime.
+
+We can also force Next.js to render a route dynamically:     
+export const dynamic = 'force-dynamic'; from page.js
+export const revalidate = 0; from page.js
+{ cache: 'no-store' } :  added to a fetch request in any of the route's server components
+nostore() in any of the route's server components
+
+
+Content Delivery Network (CDN): A network of servers located around the globe that cache and deliver a website's static content (HTML, CSS, JS, images) from as close as possible to each user.
+
+Serverless computing: With the serverless computing model, we can run application code, usually back-end code, without managing the server ourselves. Instead, we can just run single functions on a cloud provider: serverless functions. The server is initialized and active only for the duration the serverless function is running, unlike a traditional Node.js app where the server is constantly running. Remember: each dynamic route becomes a serverless function.
+
+The "edge": "As close as possible to the user". A CDN is part of an "edge" network, but there is also serverless "edge" computing. This is serverless computing that does not happen on a central server, but on a network that's distributed around the globe, as close as possible to the user (like a CDN but for running code). Important: we can select certain routes to run on the edge when deployed to Vercel.
+
+Incremental Static Regeneration (ISR): A Next.js feature that allows developers to update the content of a static page, in the background, even after the website has already been built and deployed. This happens by re-fetching the data of a component or entire route after a certain interval.
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand using node.js
+
+ISR will regenerate a static page and fetch fresh data for it from time to time.

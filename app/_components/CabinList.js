@@ -1,7 +1,9 @@
 import CabinCard from "@/app/_components/CabinCard.js";
 import { getCabins } from "../_lib/data-service.js";
+// import { unstable_noStore as noStore } from "next/cache.js";
 
 export default async function CabinList() {
+  // noStore(); // revalidation at component level ; opting out one of the components of route of the data cache will make the entire page dynamic and opt out of the data cache.
   const cabins = await getCabins();
   // console.log(cabins);
 
