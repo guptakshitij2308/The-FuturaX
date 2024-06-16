@@ -1,6 +1,6 @@
 import { getCountries } from "@/app/_lib/data-service";
 
-// Let's imagine your colleague already built this component 😃
+// If we weren't fetching the data,hence it needs to be a server component ; we didn't tell react explictly that it is a server component
 
 async function SelectCountry({ defaultCountry, name, id, className }) {
   const countries = await getCountries();

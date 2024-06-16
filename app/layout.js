@@ -5,6 +5,7 @@ import Navigation from "@/app/_components/Navigation.js";
 import "@/app/_styles/globals.css";
 import { Josefin_Sans } from "next/font/google"; // we are importing a function
 import Header from "./_components/Header.js";
+import { ReservationProvider } from "./_components/ReservationContext.js";
 
 const josefin = Josefin_Sans({
   subsets: ["latin"], // set of characters
@@ -36,7 +37,11 @@ export default function RootLayout({ children }) {
         <Header />
 
         <div className="flex-1 px-8 py-12 grid">
-          <main className="max-w-7xl mx-auto w-full">{children}</main>
+          <main className="max-w-7xl mx-auto w-full">
+            {/* Here ReservationProvider is a client component but children is a server component. but there is no problem as children might already have been rendered on the server and are being passed as elements. */}
+            {/* Now all the client components and only client comp will be able to use the custom hook exported. */}
+            <ReservationProvider>{children}</ReservationProvider>
+          </main>
         </div>
       </body>
     </html>

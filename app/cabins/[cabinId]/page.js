@@ -2,10 +2,11 @@
 
 // Any page or even a layout gets access to params as a props and it is same as exactly the name which we gave to the folder.
 
-import { EyeSlashIcon, MapPinIcon, UsersIcon } from "@heroicons/react/24/solid";
+import { Suspense } from "react";
+import Cabin from "../../_components/Cabin.js";
+import Reservation from "../../_components/Reservation.js";
+import Spinner from "../../_components/Spinner.js";
 import { getCabin, getCabins } from "../../_lib/data-service.js";
-import Image from "next/image.js";
-import TextExpander from "../../_components/TextExpander.js";
 
 // Instead of exporting this function for metadata,we can generate metadata directly using generateMetadata function.
 // export const metadata = {
@@ -46,63 +47,32 @@ export async function generateStaticParams() {
 }
 
 export default async function Page({ params }) {
-  const cabin = await getCabin(params.cabinId);
+  // The problem with below code is that it creates a blocking waterfall.(we re fetching multiple pieces of data that do not depend on each other but are blocking each other)
+  // const cabin = await getCabin(params.cabinId);
+  // const settings = await getSettings();
+  // const bookedDates = await getBookedDatesByCabinId(params.cabinId);
 
-  const { id, name, maxCapacity, regularPrice, discount, image, description } =
-    cabin;
+  // This is also not ideal as we can do is to fetch all the data in separate components and stream them when they get ready.
+  // const [cabin, settings, bookedDates] = await Promise.all([
+  //   getCabin(params.cabinId),
+  //   getSettings(),
+  //   getBookedDatesByCabinId(params.cabinId),
+  // ]);
+
+  const cabin = await getCabin(params.cabinId);
 
   // console.log(params);
 
   return (
     <div className="max-w-6xl mx-auto mt-8">
-      <div className="grid grid-cols-[3fr_4fr] gap-20 border border-primary-800 py-3 px-10 mb-24">
-        <div className="relative scale-[1.15] -translate-x-3">
-          <Image
-            fill
-            className="object-cover"
-            src={image}
-            alt={`Cabin ${name}`}
-          />
-        </div>
-
-        <div>
-          <h3 className="text-accent-100 font-black text-7xl mb-5 translate-x-[-254px] bg-primary-950 p-6 pb-1 w-[150%]">
-            Cabin {name}
-          </h3>
-
-          <p className="text-lg text-primary-300 mb-10">
-            <TextExpander>{description}</TextExpander>
-          </p>
-
-          <ul className="flex flex-col gap-4 mb-7">
-            <li className="flex gap-3 items-center">
-              <UsersIcon className="h-5 w-5 text-primary-600" />
-              <span className="text-lg">
-                For up to <span className="font-bold">{maxCapacity}</span>{" "}
-                guests
-              </span>
-            </li>
-            <li className="flex gap-3 items-center">
-              <MapPinIcon className="h-5 w-5 text-primary-600" />
-              <span className="text-lg">
-                Located in the heart of the{" "}
-                <span className="font-bold">Dolomites</span> (Italy)
-              </span>
-            </li>
-            <li className="flex gap-3 items-center">
-              <EyeSlashIcon className="h-5 w-5 text-primary-600" />
-              <span className="text-lg">
-                Privacy <span className="font-bold">100%</span> guaranteed
-              </span>
-            </li>
-          </ul>
-        </div>
-      </div>
-
+      <Cabin cabin={cabin} />
       <div>
-        <h2 className="text-5xl font-semibold text-center">
-          Reserve today. Pay on arrival.
+        <h2 className="text-5xl font-semibold text-center mb-10 text-accent-400">
+          Reserve {cabin.name} today. Pay on arrival.
         </h2>
+        <Suspense fallback={<Spinner />}>
+          <Reservation cabin={cabin} />
+        </Suspense>
       </div>
     </div>
   );
