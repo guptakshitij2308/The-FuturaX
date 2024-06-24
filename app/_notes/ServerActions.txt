@@ -1,0 +1,17 @@
+Server actions allows users to perform some actual actions in Next.js apps.(Interactive full stack apps with react)
+
+What are SA? : Missing part of RSC architectures which makes the apps interactive (handle user input). In RSC architectures, for mutations we have server actions.
+They are simply async funtions that run exclusively on the server and allow to perform mutations. Created with 'use server' directive at the top of the module or a standalone file containing actions.
+
+1) They can be defined inside the server component and passed to client components as props(exception) or can be invoked right in the server component in which they are created.
+2) Dedicated server action module with use server directive and all actions exported from this (recommended) 
+
+Note : 'use server' is only for server actions and not for server component
+
+Diff b/w 'use server' (It is like a bridge which allows our code to cross from the server to the client.) and 'use client' (bridges the gap from client to server.Like an api endpoint which allows client to talk to the server.)
+
+How they work? : Nextjs will automatically create an api endpoint for each server action we create which is send to the client (not the function) , hence the code stays on the server.
+BTS : when a server action is invoked , a post req is sent to the browser with all the data being serialized. But we use a like a func.
+Like automatically created api endpoints. (they do require a running web server.)
+
+How do we use them? : 1) Form submissions (action attribute of form element ; in both client and server components.)         2) SA can be called in useEffect and event Handlers(client comp only.)

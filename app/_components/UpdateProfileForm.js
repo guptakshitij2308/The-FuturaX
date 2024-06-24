@@ -1,30 +1,43 @@
 "use client";
 
 import { useState } from "react";
+import { updateGuest } from "../_lib/actions.js";
+import { useFormStatus } from "react-dom";
 
 // Hence we need to have a trick here that the only way a client component can render a server component is by passing it as a prop
-export default function UpdateProfileForm({ children }) {
+export default function UpdateProfileForm({ guest, children }) {
   const [count, setCount] = useState();
 
-  // CHANGE
-  const countryFlag =
-    "https://upload.wikimedia.org/wikipedia/commons/5/5c/Flag_of_Portugal.svg";
+  // console.log(guest);
+  const { countryFlag, email, fullName, nationalID, nationality } = guest;
+
+  // useFormStatus : Also a part of ReactDom with React. It must be used in a component that's rendered inside a form,not in the component that contains the form.
 
   return (
-    <form className="bg-primary-900 py-8 px-12 text-lg flex gap-6 flex-col">
+    // How to get the data of the form to the SA ? Nothing req ; no states and no js ; all the form data will be passed to the func using native form data api ; just a web api supported by browsers (formData)
+
+    // The server action tied to this form makes a POST req to the api endpoint url which Next created
+    <form
+      action={updateGuest}
+      className="bg-primary-900 py-8 px-12 text-lg flex gap-6 flex-col"
+    >
       <div className="space-y-2">
         <label>Full name</label>
         <input
           disabled
+          defaultValue={fullName}
           className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm disabled:cursor-not-allowed disabled:bg-gray-600 disabled:text-gray-400"
+          name="fullName"
         />
       </div>
 
       <div className="space-y-2">
         <label>Email address</label>
         <input
+          defaultValue={email}
           disabled
           className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm disabled:cursor-not-allowed disabled:bg-gray-600 disabled:text-gray-400"
+          name="email"
         />
       </div>
 
@@ -44,15 +57,27 @@ export default function UpdateProfileForm({ children }) {
         <label htmlFor="nationalID">National ID number</label>
         <input
           name="nationalID"
+          defaultValue={nationalID}
           className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm"
         />
       </div>
 
       <div className="flex justify-end items-center gap-6">
-        <button className="bg-accent-500 px-8 py-4 text-primary-800 font-semibold hover:bg-accent-600 transition-all disabled:cursor-not-allowed disabled:bg-gray-500 disabled:text-gray-300">
-          Update profile
-        </button>
+        <Button />
       </div>
     </form>
+  );
+}
+
+function Button() {
+  const { pending } = useFormStatus();
+
+  return (
+    <button
+      className="bg-accent-500 px-8 py-4 text-primary-800 font-semibold hover:bg-accent-600 transition-all disabled:cursor-not-allowed disabled:bg-gray-500 disabled:text-gray-300"
+      disabled={pending}
+    >
+      {pending ? "Updating..." : "Update profile"}
+    </button>
   );
 }
