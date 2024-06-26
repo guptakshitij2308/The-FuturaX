@@ -69,6 +69,7 @@ export default function UpdateProfileForm({ guest, children }) {
   );
 }
 
+// The component using useFormStatus must be a client component as it has interactivity
 function Button() {
   const { pending } = useFormStatus();
 
