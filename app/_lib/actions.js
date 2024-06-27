@@ -122,3 +122,42 @@ export async function updateReservation(formData) {
   redirect("/account/reservations");
   return data;
 }
+
+export async function createReservation(bookingData, formData) {
+  // console.log(formData);
+  // console.log(bookingData);
+  const session = await auth();
+  if (!session) throw new Error("You must be logged in.");
+
+  // If we have many entries in the formData : Object.entries(formData.entries()) // this will create an object of all the entries in the form data.
+
+  const newBooking = {
+    ...bookingData,
+    guestId: session.user.guestId,
+    numGuests: Number(formData.get("numGuests")),
+    observations: formData.get("observations").slice(0, 1000),
+    extrasPrice: 0,
+    totalPrice: bookingData.cabinPrice,
+    isPaid: false,
+    hasBreakfast: false,
+    status: "unconfirmed",
+  };
+
+  const { data, error } = await supabase
+    .from("bookings")
+    .insert([newBooking])
+    // So that the newly created object gets returned!
+    .select()
+    .single();
+
+  if (error) {
+    console.error(error);
+    throw new Error("Booking could not be created");
+  }
+
+  // Cache revalidation is important to see the results of the action on the page ; the browser cache gets reset. ; this clears the browser cache , data cache and the full route cache.
+  revalidatePath(`/cabins/${newBooking.cabinId}`);
+  redirect("/thankyou");
+
+  return data;
+}
