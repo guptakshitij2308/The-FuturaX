@@ -1,11 +1,11 @@
 "use client";
 
 import { TrashIcon } from "@heroicons/react/24/solid";
-import { deleteReservation } from "../_lib/actions.js";
+// import { deleteReservation } from "../_lib/actions.js";
 import { useTransition } from "react";
 import SpinnerMini from "./SpinnerMini.js";
 
-function DeleteReservation({ bookingId }) {
+function DeleteReservation({ bookingId, onDelete }) {
   // function deleteReservation() {
   //   "use server"
   //   // SA to delete a reservation
@@ -16,10 +16,15 @@ function DeleteReservation({ bookingId }) {
   // It can be used to mark a SA as a transition ; isPending : bool , startTransition: func
   const [isPending, startTransition] = useTransition();
 
+  // function handleDelete() {
+  //   if (confirm("Are you sure you want to delete this reservation?"))
+  //     startTransition(() => deleteReservation(bookingId));
+  //   // bts this works because next is using suspense boundaries for all of this. All navigations in next are automatically wrapped into a transition hence this works
+  // }
+
   function handleDelete() {
     if (confirm("Are you sure you want to delete this reservation?"))
-      startTransition(() => deleteReservation(bookingId));
-    // bts this works because next is using suspense boundaries for all of this. All navigations in next are automatically wrapped into a transition hence this works
+      startTransition(() => onDelete(bookingId));
   }
 
   return (
@@ -43,6 +48,3 @@ function DeleteReservation({ bookingId }) {
 }
 
 export default DeleteReservation;
-
-// Optimistic Ui in order to improve the perceived performance of deleting the reservation.
-//  Trick to improve the perceived performance of user interface and is optimistic as we assume that a certain async operation will be successful before it has finished and being done in backgroud.

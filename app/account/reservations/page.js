@@ -1,11 +1,14 @@
-import ReservationCard from "@/app/_components/ReservationCard.js";
 import Link from "next/link.js";
-import { getBookings } from "../../_lib/data-service.js";
+import { ReservationList } from "../../_components/ReservationList.js";
 import { auth } from "../../_lib/auth.js";
+import { getBookings } from "../../_lib/data-service.js";
 
 export const metadata = {
   title: "Reservations",
 };
+
+// Optimistic Ui in order to improve the perceived performance of deleting the reservation.
+//  Trick to improve the perceived performance of user interface and is optimistic as we assume that a certain async operation w ill be successful before it has finished and being done in backgroud.
 
 export default async function Page() {
   // CHANGE
@@ -26,11 +29,7 @@ export default async function Page() {
           </Link>
         </p>
       ) : (
-        <ul className="space-y-6">
-          {bookings.map((booking) => (
-            <ReservationCard booking={booking} key={booking.id} />
-          ))}
-        </ul>
+        <ReservationList bookings={bookings} />
       )}
     </div>
   );
