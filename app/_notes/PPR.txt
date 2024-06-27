@@ -1,0 +1,18 @@
+As of Next.js 14, PPR is highly experimental and should not be used in production.
+
+PPR needs to be turned on in config file
+
+By default, as much as possible of any route will be statically rendered, creating a static shell
+
+Dynamic parts (components) should be placed inside Suspense boundaries
+
+There are no new APIs to learn
+
+These boundaries tell Next.js that anything within the boundary is dynamic
+
+The boundary prevents the dynamic part (e.g. reading a header or making a non-cached fetch
+request) from spreading onto the entire route.
+
+We provide a static fallback to be shown while the dynamic part is rendering
+
+Dynamic components or sub-trees are inserted into the static shell as they become available
